@@ -5,9 +5,26 @@
 </head>
 <body>
 
-    <h1>Welcome to ISP Inventory Management System</h1>
+    <h1>Welcome to {{ $systemName }}</h1>
 
-    <p>My first Laravel project page!</p>
+    <h2>Company: {{ $companyName }}</h2>
+
+    <p>Total Products: {{ $totalProducts }}</p>
+
+    <p>System Status: {{ $systemStatus }}</p>
+
+    @if($isSystemActive)
+        <p>System is Running</p>
+    <h2>Available Products</h2>
+
+<ul>
+    @foreach($products as $product)
+        <li>{{ $product }}</li>
+    @endforeach
+</ul>
+    @else
+        <p>System is Not Running</p>
+    @endif
 
 </body>
 </html>

@@ -2,34 +2,18 @@
 
 namespace App\Http\Controllers;
 
-class HelloIspController extends Controller
+class ProductController extends Controller
 {
     public function index()
     {
-        $companyName = "ABC Internet Service Provider";
+        $productName = "TP-Link Router";
+        $brand = "TP-Link";
+        $type = "Router";
 
-        $systemName = "ISP Inventory Management System";
-
-        $totalProducts = 25;
-
-        $systemStatus = "Under Development";
-
-        $isSystemActive = true;
-        $products = [
-    "Router",
-    "ONU",
-    "Fiber Optic Cable",
-    "Network Switch",
-    "LAN Cable"
-];
-
-        return view('hello-isp', [
-            'companyName' => $companyName,
-            'systemName' => $systemName,
-            'totalProducts' => $totalProducts,
-            'systemStatus' => $systemStatus,
-            'isSystemActive' => $isSystemActive,
-            'products' => $products
+        return view('products.index', [
+            'productName' => $productName,
+            'brand' => $brand,
+            'type' => $type
         ]);
     }
 }

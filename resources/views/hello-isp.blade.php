@@ -3,28 +3,20 @@
 <head>
     <title>ISP Inventory System</title>
 </head>
+<a href="{{ route('products.index') }}">
+    View All Products
+</a>
 <body>
 
-    <h1>Welcome to {{ $systemName }}</h1>
+    <h1>ISP Inventory Management System</h1>
 
-    <h2>Company: {{ $companyName }}</h2>
+    <h2>Products Page</h2>
 
-    <p>Total Products: {{ $totalProducts }}</p>
+    <h3>Product Information</h3>
 
-    <p>System Status: {{ $systemStatus }}</p>
-
-    @if($isSystemActive)
-        <p>System is Running</p>
-    <h2>Available Products</h2>
-
-<ul>
-    @foreach($products as $product)
-        <li>{{ $product }}</li>
-    @endforeach
-</ul>
-    @else
-        <p>System is Not Running</p>
-    @endif
+    <p>Product Name: {{ $productName }}</p>
+    <p>Brand: {{ $brand }}</p>
+    <p>Type: {{ $type }}</p>
 
 </body>
 </html>

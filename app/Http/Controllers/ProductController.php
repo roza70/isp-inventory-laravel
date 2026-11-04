@@ -2,36 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+
 class ProductController extends Controller
 {
- public function index()
-{
-    $products = [
-        [
-            'name' => 'TP-Link Router',
-            'brand' => 'TP-Link',
-            'type' => 'Router'
-        ],
-        [
-            'name' => 'Huawei ONU',
-            'brand' => 'Huawei',
-            'type' => 'ONU'
-        ],
-        [
-            'name' => 'D-Link Switch',
-            'brand' => 'D-Link',
-            'type' => 'Network Switch'
-        ],
-        [
-            'name' => 'ZTE ONU',
-            'brand' => 'ZTE',
-            'type' => 'ONU'
-        ]
-    ];
+    public function index()
+    {
+        $products = Product::all();
 
-    return view('products.index', [
-        'products' => $products
-    ]);
-}
-
+        return view('products.index', [
+            'products' => $products
+        ]);
+    }
 }

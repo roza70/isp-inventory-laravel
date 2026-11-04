@@ -13,13 +13,13 @@
             <th>Type</th>
         </tr>
 
-        @foreach($products as $product)
-            <tr>
-                <td>{{ $product['name'] }}</td>
-                <td>{{ $product['brand'] }}</td>
-                <td>{{ $product['type'] }}</td>
-            </tr>
-        @endforeach
+       @foreach($products as $product)
+    <tr>
+        <td>{{ $product->model_name }}</td>
+        <td>{{ $product->brand }}</td>
+        <td>{{ $product->type }}</td>
+    </tr>
+@endforeach
 
     </table>
 

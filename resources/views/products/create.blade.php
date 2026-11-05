@@ -9,8 +9,12 @@
   @csrf
 
   <label>Product Model Name:</label>
-  <input type="text" name="model_name"
-    value="{{ old('model_name') }}">
+  <input
+    type="text"
+    name="model_name"
+    value="{{ old('model_name') }}"
+    required
+    maxlength="255">
   @error('model_name')
   <p style="color: red;">{{ $message }}</p>
   @enderror
@@ -18,8 +22,12 @@
   <br><br>
 
   <label>Brand:</label>
-  <input type="text" name="brand"
-    value="{{ old('brand') }}">
+  <input
+    type="text"
+    name="brand"
+    value="{{ old('brand') }}"
+    required
+    maxlength="255">
   @error('brand')
   <p style="color: red;">{{ $message }}</p>
   @enderror
@@ -27,8 +35,12 @@
   <br><br>
 
   <label>Product Type:</label>
-  <input type="text" name="type"
-    value="{{ old('type') }}">
+  <input
+    type="text"
+    name="type"
+    value="{{ old('type') }}"
+    required
+    maxlength="255">
   @error('type')
   <p style="color: red;">{{ $message }}</p>
   @enderror

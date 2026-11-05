@@ -13,8 +13,9 @@
   <input
     type="text"
     name="model_name"
-    value="{{ old('model_name', $product->model_name) }}">
-
+    value="{{ old('model_name', $product->model_name) }}"
+    required
+    maxlength="255">
   @error('model_name')
   <p style="color: red;">{{ $message }}</p>
   @enderror
@@ -25,8 +26,9 @@
   <input
     type="text"
     name="brand"
-    value="{{ old('brand', $product->brand) }}">
-
+    value="{{ old('brand', $product->brand) }}"
+    required
+    maxlength="255">
   @error('brand')
   <p style="color: red;">{{ $message }}</p>
   @enderror
@@ -37,8 +39,9 @@
   <input
     type="text"
     name="type"
-    value="{{ old('type', $product->type) }}">
-
+    value="{{ old('type', $product->type) }}"
+    required
+    maxlength="255">
   @error('type')
   <p style="color: red;">{{ $message }}</p>
   @enderror

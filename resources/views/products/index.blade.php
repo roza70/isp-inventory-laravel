@@ -12,6 +12,12 @@
 
 <h3>All Products</h3>
 
+<a href="{{ route('products.create') }}">
+    + Add New Product
+</a>
+
+<br><br>
+
 <table border="1" cellpadding="10">
     <tr>
         <th>Product Name</th>
@@ -20,7 +26,7 @@
         <th>Action</th>
     </tr>
 
-    @foreach($products as $product)
+    @forelse($products as $product)
     <tr>
         <td>{{ $product->model_name }}</td>
         <td>{{ $product->brand }}</td>
@@ -30,11 +36,15 @@
             <a href="{{ route('products.show', $product->id) }}">
                 View
             </a>
+
             <a href="{{ route('products.edit', $product->id) }}">
                 Edit
             </a>
 
-            <form action="{{ route('products.destroy', $product->id) }}" method="POST">
+            <form
+                action="{{ route('products.destroy', $product->id) }}"
+                method="POST"
+                style="display: inline;">
                 @csrf
                 @method('DELETE')
 
@@ -46,7 +56,11 @@
             </form>
         </td>
     </tr>
-    @endforeach
+    @empty
+    <tr>
+        <td colspan="4">No products found.</td>
+    </tr>
+    @endforelse
 </table>
 
 @endsection

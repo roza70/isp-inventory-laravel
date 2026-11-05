@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -27,9 +28,16 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'model_name' => 'required|string|max:255|unique:products,model_name',
-            'brand' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'model_name' => ['required', 'string', 'max:255'],
+            'brand' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where(function ($query) use ($request) {
+                    return $query->where('model_name', $request->model_name);
+                }),
+            ],
+            'type' => ['required', 'string', 'max:255'],
         ]);
 
         Product::create($validatedData);
@@ -37,6 +45,7 @@ class ProductController extends Controller
         return redirect()->route('products.index')
             ->with('success', 'Product created successfully!');
     }
+
     // Display a single product
     public function show(Product $product)
     {
@@ -44,6 +53,7 @@ class ProductController extends Controller
             'product' => $product
         ]);
     }
+
     // Show the Edit Product form
     public function edit(Product $product)
     {
@@ -56,9 +66,16 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validatedData = $request->validate([
-            'model_name' => 'required|string|max:255|unique:products,model_name,' . $product->id,
-            'brand' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'model_name' => ['required', 'string', 'max:255'],
+            'brand' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where(function ($query) use ($request) {
+                    return $query->where('model_name', $request->model_name);
+                })->ignore($product->id),
+            ],
+            'type' => ['required', 'string', 'max:255'],
         ]);
 
         $product->update($validatedData);

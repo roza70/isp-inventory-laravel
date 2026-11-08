@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>ISP Inventory System</title>
 </head>
+
 <body>
 
     <header>
         <h1>ISP Inventory Management System</h1>
         <nav>
             <a href="{{ route('products.index') }}">Products</a>
+
+
+            <a href="{{ route('organizations.index') }}">Organizations</a>
+            <a href="{{ route('warehouses.index') }}">Warehouses</a>
+            <a href="{{ route('devices.index') }}">Devices</a>
         </nav>
     </header>
 
@@ -25,4 +32,5 @@
     </footer>
 
 </body>
+
 </html>

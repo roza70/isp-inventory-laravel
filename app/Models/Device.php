@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\FaultyDevice;
+
 
 class Device extends Model
 {
@@ -32,5 +34,9 @@ class Device extends Model
     public function usageInfos(): HasMany
     {
         return $this->hasMany(UsageInfo::class);
+    }
+    public function faultyDevices(): HasMany
+    {
+        return $this->hasMany(FaultyDevice::class);
     }
 }

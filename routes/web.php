@@ -9,6 +9,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\UsageInfoController;
 use App\Http\Controllers\StockReceiptController;
 use App\Http\Controllers\RouterTransactionController;
+use App\Http\Controllers\FaultyDeviceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,3 +46,11 @@ Route::get('/router-transactions/create', [RouterTransactionController::class, '
 
 Route::post('/router-transactions', [RouterTransactionController::class, 'store'])
     ->name('router-transactions.store');
+Route::get('/faulty-devices', [FaultyDeviceController::class, 'index'])
+    ->name('faulty-devices.index');
+
+Route::get('/faulty-devices/create', [FaultyDeviceController::class, 'create'])
+    ->name('faulty-devices.create');
+
+Route::post('/faulty-devices', [FaultyDeviceController::class, 'store'])
+    ->name('faulty-devices.store');

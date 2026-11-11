@@ -22,6 +22,7 @@
             <a href="{{ route('router-transactions.index') }}">
                 Router Transactions
             </a>
+            <a href="{{ route('faulty-devices.index') }}">Faulty Devices</a>
         </nav>
     </header>
 

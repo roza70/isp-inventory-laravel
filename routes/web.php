@@ -7,6 +7,8 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\UsageInfoController;
+use App\Http\Controllers\StockReceiptController;
+use App\Http\Controllers\RouterTransactionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,3 +29,19 @@ Route::get('/usage-infos', [UsageInfoController::class, 'index'])
     ->name('usage-infos.index');
 Route::put('/usage-infos/{usageInfo}/return', [UsageInfoController::class, 'returnDevice'])
     ->name('usage-infos.return');
+Route::get('/stock-receipts', [StockReceiptController::class, 'index'])
+    ->name('stock-receipts.index');
+
+Route::get('/stock-receipts/create', [StockReceiptController::class, 'create'])
+    ->name('stock-receipts.create');
+
+Route::post('/stock-receipts', [StockReceiptController::class, 'store'])
+    ->name('stock-receipts.store');
+Route::get('/router-transactions', [RouterTransactionController::class, 'index'])
+    ->name('router-transactions.index');
+
+Route::get('/router-transactions/create', [RouterTransactionController::class, 'create'])
+    ->name('router-transactions.create');
+
+Route::post('/router-transactions', [RouterTransactionController::class, 'store'])
+    ->name('router-transactions.store');

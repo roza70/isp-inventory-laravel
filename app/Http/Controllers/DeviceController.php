@@ -12,13 +12,49 @@ use App\Models\Warehouse;
 class DeviceController extends Controller
 {
     // Display all devices
+
     public function index()
     {
         $devices = Device::with(['product', 'warehouse'])->get();
 
-        return view('devices.index', [
-            'devices' => $devices
-        ]);
+        // Automatic stock calculations
+        $totalDevices = Device::count();
+
+        $inStock = Device::where('status', 'in_stock')->count();
+
+        $inUse = Device::where('status', 'in_use')->count();
+
+        $faulty = Device::where('status', 'faulty')->count();
+
+        $newDevices = Device::where('condition', 'new')->count();
+
+        $oldDevices = Device::where('condition', 'old')->count();
+        // Product-wise available stock calculation
+        $stockSummary = Device::with('product')
+            ->where('status', 'in_stock')
+            ->get()
+            ->groupBy('product_id')
+            ->map(function ($devices) {
+                return [
+                    'product' => $devices->first()->product,
+                    'new_quantity' => $devices->where('condition', 'new')->count(),
+                    'old_quantity' => $devices->where('condition', 'old')->count(),
+                    'total_quantity' => $devices->count(),
+                ];
+            })
+            ->values();
+
+        return view('devices.index', compact(
+            'devices',
+            'totalDevices',
+            'inStock',
+            'inUse',
+            'faulty',
+            'newDevices',
+            'oldDevices',
+            'stockSummary'
+
+        ));
     }
 
     // Show device creation form

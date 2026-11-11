@@ -18,6 +18,10 @@
             <a href="{{ route('devices.index') }}">Devices</a>
             <a href="{{ route('usage-infos.index') }}">Usage History</a>
             <a href="{{ route('usage-infos.create') }}">Issue Device</a>
+            <a href="{{ route('stock-receipts.index') }}">Stock Receiving</a>
+            <a href="{{ route('router-transactions.index') }}">
+                Router Transactions
+            </a>
         </nav>
     </header>
 

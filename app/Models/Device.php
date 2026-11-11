@@ -1,6 +1,9 @@
 <?php
 
+
 namespace App\Models;
+
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,5 +28,9 @@ class Device extends Model
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class, 'current_warehouse_id');
+    }
+    public function usageInfos(): HasMany
+    {
+        return $this->hasMany(UsageInfo::class);
     }
 }

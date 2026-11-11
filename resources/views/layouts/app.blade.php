@@ -16,6 +16,8 @@
             <a href="{{ route('organizations.index') }}">Organizations</a>
             <a href="{{ route('warehouses.index') }}">Warehouses</a>
             <a href="{{ route('devices.index') }}">Devices</a>
+            <a href="{{ route('usage-infos.index') }}">Usage History</a>
+            <a href="{{ route('usage-infos.create') }}">Issue Device</a>
         </nav>
     </header>
 

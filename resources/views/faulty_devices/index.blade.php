@@ -4,6 +4,7 @@
 
 <h2>Faulty Device Register</h2>
 
+
 @if (session('success'))
 <p style="color: green;">
   {{ session('success') }}
@@ -27,6 +28,7 @@
     <th>Fault Description</th>
     <th>Resolution Status</th>
     <th>Remarks</th>
+    <th>Action</th>
   </tr>
 
   @forelse ($faultyDevices as $faulty)
@@ -38,10 +40,15 @@
     <td>{{ $faulty->fault_description }}</td>
     <td>{{ ucfirst(str_replace('_', ' ', $faulty->resolution_status)) }}</td>
     <td>{{ $faulty->remarks ?? 'N/A' }}</td>
+    <td>
+      <a href="{{ route('faulty-devices.edit', $faulty->id) }}">
+        Update Resolution
+      </a>
+    </td>
   </tr>
   @empty
   <tr>
-    <td colspan="7">No faulty devices found.</td>
+    <td colspan="8">No faulty devices found.</td>
   </tr>
   @endforelse
 </table>

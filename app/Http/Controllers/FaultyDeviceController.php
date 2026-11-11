@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Device;
 use App\Models\FaultyDevice;
+use App\Models\Warehouse;
 
 class FaultyDeviceController extends Controller
 {
@@ -34,6 +35,58 @@ class FaultyDeviceController extends Controller
             ->get();
 
         return view('faulty_devices.create', compact('devices'));
+    }
+    // Show resolution update form
+    public function edit(FaultyDevice $faultyDevice)
+    {
+        $faultyDevice->load('device.product');
+
+        $warehouses = Warehouse::all();
+
+        return view('faulty_devices.edit', compact(
+            'faultyDevice',
+            'warehouses'
+        ));
+    }
+    // Update faulty device resolution
+    public function update(Request $request, FaultyDevice $faultyDevice)
+    {
+        $validated = $request->validate([
+            'resolution_status' => 'required|in:pending,under_repair,repaired,written_off',
+            'warehouse_id' => 'required_if:resolution_status,repaired|nullable|exists:warehouses,id',
+            'remarks' => 'nullable|string',
+        ]);
+
+        DB::transaction(function () use ($validated, $faultyDevice) {
+
+            $faultyDevice = FaultyDevice::whereKey($faultyDevice->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $device = Device::whereKey($faultyDevice->device_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $faultyDevice->update([
+                'resolution_status' => $validated['resolution_status'],
+                'remarks' => $validated['remarks'] ?? null,
+            ]);
+
+            if ($validated['resolution_status'] === 'repaired') {
+                $device->update([
+                    'status' => 'in_stock',
+                    'current_warehouse_id' => $validated['warehouse_id'],
+                ]);
+            } else {
+                $device->update([
+                    'status' => 'faulty',
+                    'current_warehouse_id' => null,
+                ]);
+            }
+        });
+
+        return redirect()->route('faulty-devices.index')
+            ->with('success', 'Faulty device resolution updated successfully!');
     }
 
     // Register a faulty device

@@ -54,3 +54,8 @@ Route::get('/faulty-devices/create', [FaultyDeviceController::class, 'create'])
 
 Route::post('/faulty-devices', [FaultyDeviceController::class, 'store'])
     ->name('faulty-devices.store');
+Route::get('/faulty-devices/{faultyDevice}/edit', [FaultyDeviceController::class, 'edit'])
+    ->name('faulty-devices.edit');
+
+Route::put('/faulty-devices/{faultyDevice}', [FaultyDeviceController::class, 'update'])
+    ->name('faulty-devices.update');

@@ -13,6 +13,10 @@ class WarehouseTransfer extends Model
         'to_warehouse_id',
         'transfer_date',
         'remarks',
+        'approval_status',
+        'approved_by',
+        'approved_at',
+        'approval_remarks',
     ];
 
     public function device(): BelongsTo
@@ -34,5 +38,10 @@ class WarehouseTransfer extends Model
             Warehouse::class,
             'to_warehouse_id'
         );
+    }
+
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

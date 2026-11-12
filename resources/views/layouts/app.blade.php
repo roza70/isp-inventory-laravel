@@ -1,49 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <title>ISP Inventory System</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="font-sans antialiased">
+    <div class="min-h-screen bg-gray-100">
+        @include('layouts.navigation')
 
-    <header>
-        <h1>ISP Inventory Management System</h1>
-        <nav>
-            <a href="{{ route('products.index') }}">Products</a>
+        @isset($header)
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                {{ $header }}
+            </div>
+        </header>
+        @endisset
 
-
-            <a href="{{ route('organizations.index') }}">Organizations</a>
-            <a href="{{ route('warehouses.index') }}">Warehouses</a>
-            <a href="{{ route('devices.index') }}">Devices</a>
-            <a href="{{ route('usage-infos.index') }}">Usage History</a>
-            <a href="{{ route('usage-infos.create') }}">Issue Device</a>
-            <a href="{{ route('stock-receipts.index') }}">Stock Receiving</a>
-            <a href="{{ route('router-transactions.index') }}">
-                Router Transactions
-            </a>
-            <a href="{{ route('faulty-devices.index') }}">Faulty Devices</a>
-            <a href="{{ route('warehouse-transfers.index') }}">
-                Warehouse Transfers
-            </a>
-            <a href="{{ route('stock-adjustments.index') }}">
-                Stock Adjustments
-            </a>
-        </nav>
-    </header>
-
-    <hr>
-
-    <main>
-        @yield('content')
-    </main>
-
-    <hr>
-
-    <footer>
-        <p>ISP Inventory System © 2026</p>
-    </footer>
-
+        <main>
+            @hasSection('content')
+            @yield('content')
+            @else
+            {{ $slot ?? '' }}
+            @endif
+        </main>
+    </div>
 </body>
 
 </html>

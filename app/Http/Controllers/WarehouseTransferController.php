@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
 use App\Models\Device;
@@ -11,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-
 class WarehouseTransferController extends Controller
 {
     public function index()
@@ -20,6 +17,7 @@ class WarehouseTransferController extends Controller
             'device.product',
             'fromWarehouse',
             'toWarehouse',
+            'approver',
         ])->latest()->get();
 
         return view('warehouse_transfers.index', compact('transfers'));
@@ -39,6 +37,7 @@ class WarehouseTransferController extends Controller
             'warehouses'
         ));
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -75,21 +74,19 @@ class WarehouseTransferController extends Controller
                 ]);
             }
 
+            // Create a pending transfer request.
             WarehouseTransfer::create([
                 'device_id' => $device->id,
                 'from_warehouse_id' => $device->current_warehouse_id,
                 'to_warehouse_id' => $validated['to_warehouse_id'],
                 'transfer_date' => $validated['transfer_date'],
                 'remarks' => $validated['remarks'] ?? null,
-            ]);
-
-            $device->update([
-                'current_warehouse_id' => $validated['to_warehouse_id'],
+                'approval_status' => 'pending',
             ]);
         });
 
         return redirect()
             ->route('warehouse-transfers.index')
-            ->with('success', 'Device transferred successfully!');
+            ->with('success', 'Warehouse transfer request submitted for approval!');
     }
 }

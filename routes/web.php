@@ -12,6 +12,7 @@ use App\Http\Controllers\RouterTransactionController;
 use App\Http\Controllers\FaultyDeviceController;
 use App\Http\Controllers\WarehouseTransferController;
 use App\Http\Controllers\StockAdjustmentController;
+use App\Http\Controllers\WastageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -77,3 +78,5 @@ Route::get('/stock-adjustments/create', [StockAdjustmentController::class, 'crea
 
 Route::post('/stock-adjustments', [StockAdjustmentController::class, 'store'])
     ->name('stock-adjustments.store');
+Route::resource('wastages', WastageController::class)
+    ->only(['index', 'create', 'store']);

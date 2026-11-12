@@ -26,12 +26,14 @@ class UsageInfoController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'device_id' => 'required|exists:devices,id',
+            'device_id' => [
+                'required',
+                'exists:devices,id,status,in_stock',
+            ],
             'organization_id' => 'required|exists:organizations,id',
             'issue_date' => 'required|date',
             'remarks' => 'nullable|string',
         ]);
-
         DB::transaction(function () use ($validated) {
 
             $device = Device::where('status', 'in_stock')

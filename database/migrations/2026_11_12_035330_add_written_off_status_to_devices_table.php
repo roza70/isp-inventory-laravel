@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('devices', function (Blueprint $table) {
@@ -17,6 +14,7 @@ return new class extends Migration
                 'in_use',
                 'faulty',
                 'written_off',
+                'wasted',
             ])->default('in_stock')->change();
         });
     }
@@ -28,6 +26,7 @@ return new class extends Migration
                 'in_stock',
                 'in_use',
                 'faulty',
+                'written_off',
             ])->default('in_stock')->change();
         });
     }

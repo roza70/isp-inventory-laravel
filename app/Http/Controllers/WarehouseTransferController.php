@@ -42,7 +42,10 @@ class WarehouseTransferController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'device_id' => 'required|exists:devices,id',
+            'device_id' => [
+                'required',
+                'exists:devices,id,status,in_stock',
+            ],
             'to_warehouse_id' => 'required|exists:warehouses,id',
             'transfer_date' => 'required|date',
             'remarks' => 'nullable|string',

@@ -23,6 +23,12 @@
                 Router Transactions
             </a>
             <a href="{{ route('faulty-devices.index') }}">Faulty Devices</a>
+            <a href="{{ route('warehouse-transfers.index') }}">
+                Warehouse Transfers
+            </a>
+            <a href="{{ route('stock-adjustments.index') }}">
+                Stock Adjustments
+            </a>
         </nav>
     </header>
 

@@ -10,6 +10,8 @@ use App\Http\Controllers\UsageInfoController;
 use App\Http\Controllers\StockReceiptController;
 use App\Http\Controllers\RouterTransactionController;
 use App\Http\Controllers\FaultyDeviceController;
+use App\Http\Controllers\WarehouseTransferController;
+use App\Http\Controllers\StockAdjustmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -59,3 +61,19 @@ Route::get('/faulty-devices/{faultyDevice}/edit', [FaultyDeviceController::class
 
 Route::put('/faulty-devices/{faultyDevice}', [FaultyDeviceController::class, 'update'])
     ->name('faulty-devices.update');
+Route::get('/warehouse-transfers', [WarehouseTransferController::class, 'index'])
+    ->name('warehouse-transfers.index');
+
+Route::get('/warehouse-transfers/create', [WarehouseTransferController::class, 'create'])
+    ->name('warehouse-transfers.create');
+
+Route::post('/warehouse-transfers', [WarehouseTransferController::class, 'store'])
+    ->name('warehouse-transfers.store');
+Route::get('/stock-adjustments', [StockAdjustmentController::class, 'index'])
+    ->name('stock-adjustments.index');
+
+Route::get('/stock-adjustments/create', [StockAdjustmentController::class, 'create'])
+    ->name('stock-adjustments.create');
+
+Route::post('/stock-adjustments', [StockAdjustmentController::class, 'store'])
+    ->name('stock-adjustments.store');

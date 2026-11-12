@@ -39,4 +39,12 @@ class Device extends Model
     {
         return $this->hasMany(FaultyDevice::class);
     }
+    public function warehouseTransfers(): HasMany
+    {
+        return $this->hasMany(WarehouseTransfer::class);
+    }
+    public function stockAdjustments(): HasMany
+    {
+        return $this->hasMany(StockAdjustment::class);
+    }
 }

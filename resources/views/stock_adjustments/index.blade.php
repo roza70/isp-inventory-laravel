@@ -108,6 +108,8 @@
       <td>
         @if ($adjustment->approval_status === 'pending')
 
+        @if (auth()->user()->isAdmin())
+
         <form
           action="{{ route('stock-adjustments.approve', $adjustment->id) }}"
           method="POST">
@@ -142,6 +144,12 @@
             Reject
           </button>
         </form>
+
+        @else
+
+        No permission
+
+        @endif
 
         @else
 

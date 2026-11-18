@@ -128,9 +128,11 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
+
 // Admin-only approval actions
 Route::middleware(['auth', 'admin'])->group(function () {
 
+    // Stock adjustment approval
     Route::post(
         '/stock-adjustments/{stockAdjustment}/approve',
         [StockAdjustmentController::class, 'approve']
@@ -140,6 +142,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
         '/stock-adjustments/{stockAdjustment}/reject',
         [StockAdjustmentController::class, 'reject']
     )->name('stock-adjustments.reject');
-});
 
+    // Warehouse transfer approval
+    Route::post(
+        '/warehouse-transfers/{warehouseTransfer}/approve',
+        [WarehouseTransferController::class, 'approve']
+    )->name('warehouse-transfers.approve');
+
+    Route::post(
+        '/warehouse-transfers/{warehouseTransfer}/reject',
+        [WarehouseTransferController::class, 'reject']
+    )->name('warehouse-transfers.reject');
+});
 require __DIR__ . '/auth.php';

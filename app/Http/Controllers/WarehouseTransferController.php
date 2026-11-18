@@ -74,7 +74,6 @@ class WarehouseTransferController extends Controller
                 ]);
             }
 
-            // Create a pending transfer request.
             WarehouseTransfer::create([
                 'device_id' => $device->id,
                 'from_warehouse_id' => $device->current_warehouse_id,
@@ -88,5 +87,95 @@ class WarehouseTransferController extends Controller
         return redirect()
             ->route('warehouse-transfers.index')
             ->with('success', 'Warehouse transfer request submitted for approval!');
+    }
+
+    /**
+     * Approve a pending warehouse transfer.
+     */
+    public function approve(Request $request, WarehouseTransfer $warehouseTransfer)
+    {
+        $validated = $request->validate([
+            'approval_remarks' => 'nullable|string|max:1000',
+        ]);
+
+        DB::transaction(function () use ($warehouseTransfer, $validated) {
+
+            $transfer = WarehouseTransfer::whereKey($warehouseTransfer->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($transfer->approval_status !== 'pending') {
+                throw ValidationException::withMessages([
+                    'transfer' => 'This transfer has already been processed.',
+                ]);
+            }
+
+            $device = Device::whereKey($transfer->device_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($device->status !== 'in_stock') {
+                throw ValidationException::withMessages([
+                    'transfer' => 'Only in-stock devices can be transferred.',
+                ]);
+            }
+
+            if ($device->current_warehouse_id != $transfer->from_warehouse_id) {
+                throw ValidationException::withMessages([
+                    'transfer' => 'The device warehouse has changed. This transfer cannot be approved.',
+                ]);
+            }
+
+            // Move the device to the destination warehouse.
+            $device->update([
+                'current_warehouse_id' => $transfer->to_warehouse_id,
+            ]);
+
+            // Record the approval.
+            $transfer->update([
+                'approval_status' => 'approved',
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+                'approval_remarks' => $validated['approval_remarks'] ?? null,
+            ]);
+        });
+
+        return redirect()
+            ->route('warehouse-transfers.index')
+            ->with('success', 'Warehouse transfer approved successfully!');
+    }
+
+    /**
+     * Reject a pending warehouse transfer.
+     */
+    public function reject(Request $request, WarehouseTransfer $warehouseTransfer)
+    {
+        $validated = $request->validate([
+            'approval_remarks' => 'nullable|string|max:1000',
+        ]);
+
+        DB::transaction(function () use ($warehouseTransfer, $validated) {
+
+            $transfer = WarehouseTransfer::whereKey($warehouseTransfer->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($transfer->approval_status !== 'pending') {
+                throw ValidationException::withMessages([
+                    'transfer' => 'This transfer has already been processed.',
+                ]);
+            }
+
+            $transfer->update([
+                'approval_status' => 'rejected',
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+                'approval_remarks' => $validated['approval_remarks'] ?? null,
+            ]);
+        });
+
+        return redirect()
+            ->route('warehouse-transfers.index')
+            ->with('success', 'Warehouse transfer rejected successfully!');
     }
 }

@@ -15,6 +15,15 @@ class UsageInfo extends Model
         'remarks',
     ];
 
+    // Convert database date strings into Carbon date objects
+    protected function casts(): array
+    {
+        return [
+            'issue_date' => 'date',
+            'return_date' => 'date',
+        ];
+    }
+
     public function device(): BelongsTo
     {
         return $this->belongsTo(Device::class);

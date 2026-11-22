@@ -8,41 +8,64 @@ use Illuminate\Validation\Rule;
 use App\Models\Device;
 use App\Models\Product;
 use App\Models\Warehouse;
+use App\Models\Organization;
+use App\Services\StockService;
 
 class DeviceController extends Controller
 {
-    // Display all devices
-
-    public function index()
+    // Display devices with search and filters
+    public function index(Request $request, StockService $stockService)
     {
-        $devices = Device::with(['product', 'warehouse'])->get();
+        $query = Device::with(['product', 'warehouse']);
 
-        // Automatic stock calculations
+        // Filter by product model name
+        if ($request->filled('model_name')) {
+            $query->whereHas('product', function ($productQuery) use ($request) {
+                $productQuery->where(
+                    'model_name',
+                    'like',
+                    '%' . $request->model_name . '%'
+                );
+            });
+        }
+
+        // Filter by serial number
+        if ($request->filled('serial_number')) {
+            $query->where(
+                'serial_number',
+                'like',
+                '%' . $request->serial_number . '%'
+            );
+        }
+
+        // Filter by device status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by organization through usage records
+        if ($request->filled('organization_id')) {
+            $query->whereHas('usageInfos', function ($usageQuery) use ($request) {
+                $usageQuery->where('organization_id', $request->organization_id);
+            });
+        }
+
+        $devices = $query->latest()->get();
+
+        // Automatic inventory calculations
         $totalDevices = Device::count();
-
         $inStock = Device::where('status', 'in_stock')->count();
-
         $inUse = Device::where('status', 'in_use')->count();
-
         $faulty = Device::where('status', 'faulty')->count();
-
         $newDevices = Device::where('condition', 'new')->count();
-
         $oldDevices = Device::where('condition', 'old')->count();
-        // Product-wise available stock calculation
-        $stockSummary = Device::with('product')
-            ->where('status', 'in_stock')
-            ->get()
-            ->groupBy('product_id')
-            ->map(function ($devices) {
-                return [
-                    'product' => $devices->first()->product,
-                    'new_quantity' => $devices->where('condition', 'new')->count(),
-                    'old_quantity' => $devices->where('condition', 'old')->count(),
-                    'total_quantity' => $devices->count(),
-                ];
-            })
-            ->values();
+
+        // Available stock summary remains independent of filters
+        $stockSummary = $stockService->getAvailableStockSummary();
+
+        // Dropdown data
+        $products = Product::orderBy('model_name')->get();
+        $organizations = Organization::orderBy('name')->get();
 
         return view('devices.index', compact(
             'devices',
@@ -52,8 +75,9 @@ class DeviceController extends Controller
             'faulty',
             'newDevices',
             'oldDevices',
-            'stockSummary'
-
+            'stockSummary',
+            'products',
+            'organizations'
         ));
     }
 
@@ -61,7 +85,6 @@ class DeviceController extends Controller
     public function create()
     {
         $products = Product::all();
-
         $warehouses = Warehouse::all();
 
         return view('devices.create', [
@@ -93,11 +116,8 @@ class DeviceController extends Controller
             ],
 
             'condition' => 'required|in:new,old',
-
             'status' => 'required|in:in_stock,in_use,faulty',
-
             'current_warehouse_id' => 'nullable|exists:warehouses,id',
-
             'remarks' => 'nullable|string',
         ]);
 
@@ -122,9 +142,7 @@ class DeviceController extends Controller
     public function edit(string $id)
     {
         $device = Device::findOrFail($id);
-
         $products = Product::all();
-
         $warehouses = Warehouse::all();
 
         return view('devices.edit', [
@@ -161,11 +179,8 @@ class DeviceController extends Controller
             ],
 
             'condition' => 'required|in:new,old',
-
             'status' => 'required|in:in_stock,in_use,faulty',
-
             'current_warehouse_id' => 'nullable|exists:warehouses,id',
-
             'remarks' => 'nullable|string',
         ]);
 
@@ -179,7 +194,6 @@ class DeviceController extends Controller
     public function destroy(string $id)
     {
         $device = Device::findOrFail($id);
-
         $device->delete();
 
         return redirect()->route('devices.index')

@@ -15,6 +15,7 @@ use App\Http\Controllers\WarehouseTransferController;
 use App\Http\Controllers\StockAdjustmentController;
 use App\Http\Controllers\WastageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportsController;
 
 // Public welcome page
 Route::get('/', function () {
@@ -154,4 +155,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         [WarehouseTransferController::class, 'reject']
     )->name('warehouse-transfers.reject');
 });
+Route::get('/reports/available-stock', [ReportsController::class, 'availableStock'])
+    ->name('reports.available-stock');
+Route::get('/reports/usage', [ReportsController::class, 'usageReport'])
+    ->name('reports.usage');
 require __DIR__ . '/auth.php';

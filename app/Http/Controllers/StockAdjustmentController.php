@@ -187,6 +187,7 @@ class StockAdjustmentController extends Controller
                     'condition' => $adjustment->condition,
                     'status' => 'in_stock',
                     'current_warehouse_id' => $adjustment->current_warehouse_id,
+                    'remarks' => $adjustment->remarks,
                 ]);
 
                 $adjustment->device_id = $device->id;

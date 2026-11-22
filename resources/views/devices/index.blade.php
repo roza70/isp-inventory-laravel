@@ -70,8 +70,68 @@
 </p>
 @endif
 
+{{-- Device Search and Filter --}}
+<h3>Search and Filter Devices</h3>
+
+<form action="{{ route('devices.index') }}" method="GET">
+
+  <label>Model Name:</label>
+  <input
+    type="text"
+    name="model_name"
+    value="{{ request('model_name') }}"
+    placeholder="Enter model name">
+
+  <br><br>
+
+  <label>Serial Number:</label>
+  <input
+    type="text"
+    name="serial_number"
+    value="{{ request('serial_number') }}"
+    placeholder="Enter serial number">
+
+  <br><br>
+
+  <label>Status:</label>
+  <select name="status">
+    <option value="">All Statuses</option>
+    <option value="in_stock" {{ request('status') == 'in_stock' ? 'selected' : '' }}>In Stock</option>
+    <option value="in_use" {{ request('status') == 'in_use' ? 'selected' : '' }}>In Use</option>
+    <option value="faulty" {{ request('status') == 'faulty' ? 'selected' : '' }}>Faulty</option>
+    <option value="written_off" {{ request('status') == 'written_off' ? 'selected' : '' }}>Written Off</option>
+    <option value="wasted" {{ request('status') == 'wasted' ? 'selected' : '' }}>Wasted</option>
+  </select>
+
+  <br><br>
+
+  <label>Organization:</label>
+  <select name="organization_id">
+    <option value="">All Organizations</option>
+
+    @foreach ($organizations as $organization)
+    <option
+      value="{{ $organization->id }}"
+      {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+      {{ $organization->name }}
+    </option>
+    @endforeach
+  </select>
+
+  <br><br>
+
+  <button type="submit">Search / Filter</button>
+
+  <a href="{{ route('devices.index') }}">Clear Filters</a>
+
+</form>
+
+<br>
+
 {{-- All Devices --}}
 <h3>All Devices</h3>
+
+<p>Matching Devices: {{ $devices->count() }}</p>
 
 <a href="{{ route('devices.create') }}">
   + Add New Device

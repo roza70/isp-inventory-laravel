@@ -47,4 +47,18 @@ class Device extends Model
     {
         return $this->hasMany(StockAdjustment::class);
     }
+    public function stockReceipts(): HasMany
+    {
+        return $this->hasMany(StockReceipt::class);
+    }
+
+    public function routerTransactions(): HasMany
+    {
+        return $this->hasMany(RouterTransaction::class);
+    }
+
+    public function wastages(): HasMany
+    {
+        return $this->hasMany(Wastage::class);
+    }
 }

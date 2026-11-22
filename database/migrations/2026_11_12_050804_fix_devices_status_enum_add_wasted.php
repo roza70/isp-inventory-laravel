@@ -7,6 +7,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // This raw SQL is specific to MySQL.
+        // SQLite already handles the enum update through
+        // the previous Laravel Schema migration.
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement("
             ALTER TABLE devices
             MODIFY status
@@ -23,6 +30,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement("
             ALTER TABLE devices
             MODIFY status

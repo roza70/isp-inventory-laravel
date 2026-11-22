@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 use App\Models\Device;
 use App\Models\Product;
@@ -116,11 +117,12 @@ class DeviceController extends Controller
             ],
 
             'condition' => 'required|in:new,old',
-            'status' => 'required|in:in_stock,in_use,faulty',
             'current_warehouse_id' => 'nullable|exists:warehouses,id',
             'remarks' => 'nullable|string',
         ]);
 
+        // Status is not accepted from the form.
+        // Database default automatically sets it to in_stock.
         Device::create($validatedData);
 
         return redirect()->route('devices.index')
@@ -179,22 +181,50 @@ class DeviceController extends Controller
             ],
 
             'condition' => 'required|in:new,old',
-            'status' => 'required|in:in_stock,in_use,faulty',
             'current_warehouse_id' => 'nullable|exists:warehouses,id',
             'remarks' => 'nullable|string',
         ]);
 
+        // Status is deliberately excluded.
+        // Existing device status remains unchanged.
         $device->update($validatedData);
 
         return redirect()->route('devices.index')
             ->with('success', 'Device updated successfully!');
     }
 
-    // Delete a device
+    // Delete a device safely
     public function destroy(string $id)
     {
         $device = Device::findOrFail($id);
-        $device->delete();
+
+        // Check whether the device has inventory history
+        $hasHistory =
+            $device->usageInfos()->exists() ||
+            $device->faultyDevices()->exists() ||
+            $device->warehouseTransfers()->exists() ||
+            $device->stockAdjustments()->exists() ||
+            $device->stockReceipts()->exists() ||
+            $device->routerTransactions()->exists() ||
+            $device->wastages()->exists();
+
+        if ($hasHistory) {
+            return redirect()->route('devices.index')
+                ->with(
+                    'error',
+                    'This device cannot be deleted because it has related inventory history.'
+                );
+        }
+
+        try {
+            $device->delete();
+        } catch (QueryException $exception) {
+            return redirect()->route('devices.index')
+                ->with(
+                    'error',
+                    'This device cannot be deleted because it is referenced by another record.'
+                );
+        }
 
         return redirect()->route('devices.index')
             ->with('success', 'Device deleted successfully!');

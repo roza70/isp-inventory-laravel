@@ -81,22 +81,6 @@
   <br>
 
   <div>
-    <label>Status:</label>
-
-    <select name="status" required>
-      <option value="in_stock" {{ old('status', 'in_stock') == 'in_stock' ? 'selected' : '' }}>In Stock</option>
-      <option value="in_use" {{ old('status') == 'in_use' ? 'selected' : '' }}>In Use</option>
-      <option value="faulty" {{ old('status') == 'faulty' ? 'selected' : '' }}>Faulty</option>
-    </select>
-
-    @error('status')
-    <p style="color: red;">{{ $message }}</p>
-    @enderror
-  </div>
-
-  <br>
-
-  <div>
     <label>Warehouse:</label>
 
     <select name="current_warehouse_id">

@@ -61,12 +61,9 @@
   <br>
 
   <div>
-    <label>Status:</label>
-    <select name="status" required>
-      <option value="in_stock" {{ old('status', $device->status) == 'in_stock' ? 'selected' : '' }}>In Stock</option>
-      <option value="in_use" {{ old('status', $device->status) == 'in_use' ? 'selected' : '' }}>In Use</option>
-      <option value="faulty" {{ old('status', $device->status) == 'faulty' ? 'selected' : '' }}>Faulty</option>
-    </select>
+    <label>Current Status:</label>
+    <p>{{ ucfirst(str_replace('_', ' ', $device->status)) }}</p>
+    <small>Status is managed through the relevant inventory workflow.</small>
   </div>
 
   <br>

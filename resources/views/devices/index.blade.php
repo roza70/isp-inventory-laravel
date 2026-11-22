@@ -70,6 +70,13 @@
 </p>
 @endif
 
+{{-- Error Message --}}
+@if(session('error'))
+<p style="color: red;">
+  {{ session('error') }}
+</p>
+@endif
+
 {{-- Device Search and Filter --}}
 <h3>Search and Filter Devices</h3>
 
